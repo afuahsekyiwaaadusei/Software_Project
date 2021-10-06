@@ -103,10 +103,20 @@ function showQuetions(index){
     
     const option = option_list.querySelectorAll(".option");
 
+    // for loop replaced with recursive function below
     // set onclick attribute to all available options
-    for(i=0; i < option.length; i++){
-        option[i].setAttribute("onclick", "optionSelected(this)");
-    }
+     function setOnclickAttribute(i = 0){
+        if(i < option.length){
+            option[i].setAttribute("onclick", "optionSelected(this)");
+            setOnclickAttribute(i + 1);
+        }
+
+        
+      }
+      setOnclickAttribute();
+    // for(i=0; i < option.length; i++){
+    //     option[i].setAttribute("onclick", "optionSelected(this)");
+    // }
 }
 // creating the new div tags which for icons
 let tickIconTag = '<div class="icon tick"><i class="fas fa-check"></i></div>';
@@ -130,18 +140,41 @@ function optionSelected(answer){
         answer.classList.add("incorrect"); //adding red color to correct selected option
         answer.insertAdjacentHTML("beforeend", crossIconTag); //adding cross icon to correct selected option
         console.log("Wrong Answer");
-
-        for(i=0; i < allOptions; i++){
-            if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer 
-                option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
-                option_list.children[i].insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to matched option
-                console.log("Auto selected correct answer.");
+      
+        // for(i=0; i < allOptions; i++){
+        //     if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer 
+        //         option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
+        //         option_list.children[i].insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to matched option
+        //         console.log("Auto selected correct answer.");
+        //     }
+        // }
+        // for loop  above replaced with recursive function below
+        function autoSelect( i = 0){
+            if(i < allOptions) {
+                if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer 
+                    option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
+                    option_list.children[i].insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to matched option
+                    console.log("Auto selected correct answer.");
+                    autoSelect( i + 1);
+                }
             }
+         
+        }
+        autoSelect();
+    }
+   
+    // for(i=0; i < allOptions; i++){
+    //     option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
+    // }
+
+    //for loop  above replaced with recursive function below
+    function disableOptions( i = 0) {
+        if(i < allOptions){
+            option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options 
+            disableOptions( i + 1);
         }
     }
-    for(i=0; i < allOptions; i++){
-        option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
-    }
+    disableOptions()
     next_btn.classList.add("show"); //show the next button if user selected any option
 }
 
@@ -179,16 +212,32 @@ function startTimer(time){
             timeText.textContent = "Time Off"; //change the time text to time off
             const allOptions = option_list.children.length; //getting all option items
             let correcAns = questions[que_count].answer; //getting correct answer from array
-            for(i=0; i < allOptions; i++){
-                if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer
-                    option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
-                    option_list.children[i].insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to matched option
-                    console.log("Time Off: Auto selected correct answer.");
+
+            function autoSelect( i = 0) {
+                if(i < allOptions){
+                    if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer
+                        option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
+                        option_list.children[i].insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to matched option
+                        console.log("Time Off: Auto selected correct answer.");
+                    }
+                    option_list.children[i].classList.add("disabled"); //once  an option is auto selected  disable all  options
+
+                    autoSelect( i + 1)
                 }
             }
-            for(i=0; i < allOptions; i++){
-                option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
-            }
+            autoSelect()
+            // for(i=0; i < allOptions; i++){
+            //     if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer
+            //         option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
+            //         option_list.children[i].insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to matched option
+            //         console.log("Time Off: Auto selected correct answer.");
+            //     }
+            //     option_list.children[i].classList.add("disabled"); //once  an option is auto selected  disabled all  options
+            // }
+
+            // for(i=0; i < allOptions; i++){
+            //     option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
+            // }
             next_btn.classList.add("show"); //show the next button if user selected any option
         }
     }
